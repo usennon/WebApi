@@ -1,4 +1,7 @@
-﻿namespace WebApi.Extensions
+﻿using LoggerService;
+using Service.Contracts;
+
+namespace WebApi.Extensions
 {
     public static class ServiceExtensions
     {
@@ -10,6 +13,9 @@
                  .AllowAnyMethod()
                  .AllowAnyHeader());
             });
+        public static void ConfigureLoggerService(this IServiceCollection services) =>
+            services.AddSingleton<ILoggerManager, LoggerManager>();
+
 
     }
 }

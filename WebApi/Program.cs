@@ -1,16 +1,18 @@
 using WebApi.Extensions;
+using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+
+
 builder.Services.ConfigureCors();
 
-// Add services to the container.
+builder.Services.ConfigureLoggerService();
 
 builder.Services.AddControllers().AddApplicationPart(typeof(WebApi.Presentation.AssemblyReference).Assembly);
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 

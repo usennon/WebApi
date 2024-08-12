@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{4205B747-6339-4F88-BD77-CCA3F9CE70E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{4205B747-6339-4F88-BD77-CCA3F9CE70E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{14C76367-ED95-44E6-AB5C-BE4F441ED615}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{14C76367-ED95-44E6-AB5C-BE4F441ED615}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{CC64BF1A-701A-4839-AD93-3DF5B1AEDA2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{CC64BF1A-701A-4839-AD93-3DF5B1AEDA2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Presentation", "WebApi.Presentation\WebApi.Presentation.csproj", "{F9474BAA-CD68-4ECC-9A38-D0EEAB5F96A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi.Presentation", "WebApi.Presentation\WebApi.Presentation.csproj", "{F9474BAA-CD68-4ECC-9A38-D0EEAB5F96A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{397E6610-79D0-4248-89FC-A8493E8D108E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F9474BAA-CD68-4ECC-9A38-D0EEAB5F96A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9474BAA-CD68-4ECC-9A38-D0EEAB5F96A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9474BAA-CD68-4ECC-9A38-D0EEAB5F96A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{397E6610-79D0-4248-89FC-A8493E8D108E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{397E6610-79D0-4248-89FC-A8493E8D108E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{397E6610-79D0-4248-89FC-A8493E8D108E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{397E6610-79D0-4248-89FC-A8493E8D108E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
