@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
+using Entities.TransferObjects;
 
 
 namespace WebApi.Presentation.Controllers
@@ -13,15 +14,20 @@ namespace WebApi.Presentation.Controllers
         public TextController(IServiceManager service) => _service = service;
 
         [HttpGet("uppercase")]
-        public IActionResult GetUpperCase([FromQuery] string input)
+        public IActionResult GetUpperCase([FromQuery] string? input)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                return BadRequest("Input cannot be null or empty.");
+            }
+
             return Ok(_service.TextService.ToUpperCase(input));
         }
 
-        [HttpGet("concat")]
-        public IActionResult Concatenate([FromQuery] string str1, [FromQuery] string str2)
+        [HttpPost("concat")]
+        public IActionResult Concatenate([FromBody] StringContainerModel strings)
         {
-            return Ok(_service.TextService.Concatenate(str1, str2));
+            return Ok(_service.TextService.Concatenate(strings.FirstString, strings.SecondString));
         }
 
     }
