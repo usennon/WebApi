@@ -11,5 +11,9 @@ namespace Service.Contracts
         public int GetSum(NumberInputModel numbers);
 
         public double GetAverage(NumberInputModel numbers);
+
+        public double GetIntegral(double start, double end, int intervalAmount);
+
+        public double GetCompoundInterest(CompoundInterstModel model);
     }
 }

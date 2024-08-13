@@ -38,5 +38,12 @@ namespace WebApi.Presentation.Controllers
             return Ok(average);
         }
 
+        [HttpPost("average")]
+        public IActionResult GetIntegral([FromBody] NumberInputModel input)
+        {
+            var average = _service.MathService.GetAverage(input);
+            return Ok(average);
+        }
+
     }
 }
