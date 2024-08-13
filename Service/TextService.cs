@@ -6,6 +6,12 @@ namespace Service
 {
     internal sealed class TextService : ITextService
     {
+        private readonly ILoggerManager _logger;
+
+        public TextService(ILoggerManager logger) 
+        {
+            _logger = logger;
+        }
         public string ToUpperCase(string str) => str.ToUpper();
 
         public string Concatenate(string str1, string str2)
