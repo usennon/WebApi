@@ -8,7 +8,7 @@ namespace Entities.TransferObjects
 {
     public class StringContainerModel
     {
-        public string FirstString { get; init; } = "";
-        public string SecondString { get; init; } = "";
+        public string FirstString { get; set; } = "";
+        public string SecondString { get; set; } = "";
     }
 }
