@@ -1,5 +1,6 @@
 ﻿using LoggerService;
 using Service.Contracts;
+using Service;
 
 namespace WebApi.Extensions
 {
@@ -15,6 +16,10 @@ namespace WebApi.Extensions
             });
         public static void ConfigureLoggerService(this IServiceCollection services) =>
             services.AddSingleton<ILoggerManager, LoggerManager>();
+
+        public static void ConfigureServiceManager(this IServiceCollection services) =>
+            services.AddScoped<IServiceManager, ServiceManager>();
+
 
 
     }

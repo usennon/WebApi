@@ -11,6 +11,8 @@ builder.Services.ConfigureCors();
 
 builder.Services.ConfigureLoggerService();
 
+builder.Services.ConfigureServiceManager();
+
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddControllers().AddApplicationPart(typeof(WebApi.Presentation.AssemblyReference).Assembly);
