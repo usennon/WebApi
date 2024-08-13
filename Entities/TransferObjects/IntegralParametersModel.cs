@@ -10,12 +10,12 @@ namespace Entities.TransferObjects
     public record IntegralParametersModel
     {
         [Required(ErrorMessage = "Interval Required")]
-        public int StartInterval;
+        public int StartInterval { get; init; }
 
         [Required(ErrorMessage = "Interval Required")]
-        public int EndInterval;
+        public int EndInterval { get; init; }
 
         [Required(ErrorMessage = "Interval Required")]
-        public int IntervalsAmount;
+        public int IntervalsAmount { get; init; }
     }
 }

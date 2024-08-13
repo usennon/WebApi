@@ -4,19 +4,19 @@ namespace Entities.TransferObjects
 {
     public record CompoundInterstModel
     {
-        [Range(0, double.PositiveInfinity, ErrorMessage = "Start sum can't be below 0")]
-        public int StartSum = 0;
+        [Range(0, int.MaxValue, ErrorMessage = "Start sum can't be below 0")]
+        public int StartSum { get; init; } = 0;
 
         [Required(ErrorMessage = "Interest Rate required")]
         [Range(0, 1, ErrorMessage = "Interest rate can't be below 0 and more than 100!")]
-        public double YearInterestRate;
+        public double YearInterestRate { get; init; }
 
         [Range(1, 365, ErrorMessage = "In year there are only 365 days")]
-        public int NumberOfPeriods = 12;
+        public int NumberOfPeriods { get; init; } = 12;
 
         [Required(ErrorMessage = "You must provide necessaery amount of years.")]
-        public int YearsNumber;
+        public int YearsNumber { get; init; }
 
-        public bool ifReinvestment = true;
+        public bool ifReinvestment { get; init; } = true;
     }
 }
