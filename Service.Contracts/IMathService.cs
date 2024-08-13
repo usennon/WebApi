@@ -12,7 +12,7 @@ namespace Service.Contracts
 
         public double GetAverage(NumberInputModel numbers);
 
-        public double GetIntegral(double start, double end, int intervalAmount);
+        public double GetIntegral(IntegralParametersModel parameters);
 
         public double GetCompoundInterest(CompoundInterstModel model);
     }

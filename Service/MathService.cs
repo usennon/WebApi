@@ -20,8 +20,8 @@ namespace Service
 
         public double GetAverage(NumberInputModel numbers) => numbers.Numbers.Average();
 
-        public double GetIntegral(double start, double end, int intervalAmount)
-            => SimpsonMethod.SimpsonIntegral(start, end, intervalAmount);
+        public double GetIntegral(IntegralParametersModel parameters)
+            => SimpsonMethod.SimpsonIntegral(parameters.StartInterval, parameters.EndInterval, parameters.IntervalsAmount);
 
         public double GetCompoundInterest(CompoundInterstModel model)
         {

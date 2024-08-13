@@ -1,6 +1,7 @@
 using WebApi.Extensions;
 using NLog;
 using WebApi;
+using WebApi.Presentation.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureServiceManager();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+builder.Services.AddScoped<ValidateEvenPositiveNumberFilter>();
 
 builder.Services.AddControllers().AddApplicationPart(typeof(WebApi.Presentation.AssemblyReference).Assembly);
 

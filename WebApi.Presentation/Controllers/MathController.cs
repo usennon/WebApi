@@ -1,6 +1,7 @@
 ﻿using Entities.TransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
+using WebApi.Presentation.ActionFilters;
 
 namespace WebApi.Presentation.Controllers
 {
@@ -18,7 +19,7 @@ namespace WebApi.Presentation.Controllers
             return Ok(_service.MathService.GetSum(a, b));
         }
 
-        [HttpGet("Sub")]
+        [HttpGet("sub")]
         public IActionResult Sub([FromQuery] int a, [FromQuery] int b)
         {
             return Ok(_service.MathService.GetSub(a, b));
@@ -38,12 +39,22 @@ namespace WebApi.Presentation.Controllers
             return Ok(average);
         }
 
-        [HttpPost("average")]
-        public IActionResult GetIntegral([FromBody] NumberInputModel input)
+        [ServiceFilter(typeof(ValidateEvenPositiveNumberFilter))]
+        [HttpPost("integral")]
+        public IActionResult GetIntegral([FromBody] IntegralParametersModel input)
         {
-            var average = _service.MathService.GetAverage(input);
-            return Ok(average);
+            var result = _service.MathService.GetIntegral(input);
+            return Ok(result);
         }
+
+        [HttpPost("interest")]
+        public IActionResult GetCompoundInterest([FromBody] CompoundInterstModel input)
+        {
+            var result = _service.MathService.GetCompoundInterest(input);
+            return Ok(result);
+        }
+
+
 
     }
 }
