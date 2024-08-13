@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Entities.TransferObjects;
 
 namespace Service.Contracts
 {
     public interface IMathService
     {
-        public int Sum(int a, int b);
+        public int GetSum(int a, int b);
 
-        public int Sub(int a, int b);
+        public int GetSub(int a, int b);
+
+        public int GetSum(NumberInputModel numbers);
+
+        public double GetAverage(NumberInputModel numbers);
     }
 }

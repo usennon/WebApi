@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.TransferObjects;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 
 namespace WebApi.Presentation.Controllers
@@ -14,13 +15,28 @@ namespace WebApi.Presentation.Controllers
         [HttpGet("sum")]
         public IActionResult Sum([FromQuery] int a, [FromQuery] int b)
         {
-            return Ok(_service.MathService.Sum(a, b));
+            return Ok(_service.MathService.GetSum(a, b));
         }
 
-        [HttpGet("sub")]
+        [HttpGet("Sub")]
         public IActionResult Sub([FromQuery] int a, [FromQuery] int b)
         {
-            return Ok(_service.MathService.Sub(a, b));
+            return Ok(_service.MathService.GetSub(a, b));
         }
+
+        [HttpPost("sum")]
+        public IActionResult GetSum([FromBody] NumberInputModel input)
+        {
+            var sum = _service.MathService.GetSum(input);
+            return Ok(sum);
+        }
+
+        [HttpPost("average")]
+        public IActionResult GetAverage([FromBody] NumberInputModel input)
+        {
+            var average = _service.MathService.GetAverage(input);
+            return Ok(average);
+        }
+
     }
 }
