@@ -8,7 +8,11 @@ namespace Entities.TransferObjects
 {
     public class NumberInputModel
     {
-        public List<int> Numbers { get; set; }
+        public int FirstNumber { get; init; }
+
+        public int SecondNumber { get; init; }
+        public List<int> Numbers { get; init; }
+
     }
 
 }

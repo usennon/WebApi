@@ -27,7 +27,7 @@ namespace Service
         {
             if (model.ifReinvestment == true)
             {
-                return model.StartSum * Math.Pow((1 + model.YearInterestRate / model.NumberOfPeriods),
+                return model.StartSum * Math.Pow(1 + model.YearInterestRate / model.NumberOfPeriods,
                     model.NumberOfPeriods * model.YearsNumber);
             }
             else

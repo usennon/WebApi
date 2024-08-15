@@ -27,7 +27,7 @@ namespace Service.Utilities
                 sum += 2 * Function(a + i * h);
             }
 
-            return sum * h / 3;
+            return Math.Round(sum * h / 3, 2);
         }
     }
 }

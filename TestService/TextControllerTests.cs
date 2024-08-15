@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Moq;
 using Service.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Entities.TransferObjects;
 using WebApi.Presentation.Controllers;
 
 namespace TestService
@@ -14,24 +9,34 @@ namespace TestService
     public class TextControllerTests
     {
         private Mock<IServiceManager> _mockServiceManager;
-        private TextController _controller;
+
+        private TextController CreateController(Mock<IServiceManager>? mockServiceManager = null)
+        {
+            var controller = new TextController((mockServiceManager ?? _mockServiceManager).Object);
+
+            return controller;
+        }
 
         [SetUp]
         public void Setup()
         {
             _mockServiceManager = new Mock<IServiceManager>();
-            _controller = new TextController(_mockServiceManager.Object);
+            _mockServiceManager.Setup(s => s.TextService.ToUpperCase(It.IsAny<string>())).
+                Returns((string s) => s.ToUpper());
+            _mockServiceManager.Setup(s => s.TextService.Concatenate(It.IsAny<string>(), It.IsAny<string>())).
+                Returns((string str1, string str2) => string.Concat(str1, str2));
         }
 
         [Test]
         public void GetUpperCase_ReturnsUpper()
         {
+            // Arrange
             var inputString = "toupper";
             var expected = "TOUPPER";
-            _mockServiceManager.Setup(s => s.TextService.ToUpperCase(inputString)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(inputString) as OkObjectResult;
+            var result = controller.GetUpperCase(inputString) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -44,10 +49,10 @@ namespace TestService
         {
             var inputString = "2";
             var expected = "2";
-            _mockServiceManager.Setup(s => s.TextService.ToUpperCase(inputString)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(inputString) as OkObjectResult;
+            var result = controller.GetUpperCase(inputString) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -60,9 +65,10 @@ namespace TestService
         {
             // Arrange
             var input = string.Empty;
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(input);
+            var result = controller.GetUpperCase(input);
 
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
@@ -72,9 +78,10 @@ namespace TestService
         {
             // Arrange
             string? input = null;
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(input) as BadRequestObjectResult;
+            var result = controller.GetUpperCase(input) as BadRequestObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -88,10 +95,10 @@ namespace TestService
             // Arrange
             var input = "hello123!@#";
             var expected = "HELLO123!@#";
-            _mockServiceManager.Setup(s => s.TextService.ToUpperCase(input)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(input) as OkObjectResult;
+            var result = controller.GetUpperCase(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -105,10 +112,10 @@ namespace TestService
             // Arrange
             var input = "HELLO";
             var expected = "HELLO";
-            _mockServiceManager.Setup(s => s.TextService.ToUpperCase(input)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(input) as OkObjectResult;
+            var result = controller.GetUpperCase(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -122,10 +129,10 @@ namespace TestService
             // Arrange
             var input = "hello world";
             var expected = "HELLO WORLD";
-            _mockServiceManager.Setup(s => s.TextService.ToUpperCase(input)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(input) as OkObjectResult;
+            var result = controller.GetUpperCase(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -139,10 +146,10 @@ namespace TestService
             // Arrange
             var input = "HeLLo WoRLd";
             var expected = "HELLO WORLD";
-            _mockServiceManager.Setup(s => s.TextService.ToUpperCase(input)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.GetUpperCase(input) as OkObjectResult;
+            var result = controller.GetUpperCase(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -154,13 +161,11 @@ namespace TestService
         public void Concatenate_TwoNonEmptyStrings_ReturnsConcatenatedString()
         {
             // Arrange
-            var str1 = "Hello, ";
-            var str2 = "World!";
             var expected = "Hello, World!";
-            _mockServiceManager.Setup(s => s.TextService.Concatenate(str1, str2)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.Concatenate(str1, str2) as OkObjectResult;
+            var result = controller.Concatenate(TestData.TextData.TwoNonEmptyStrings) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -172,13 +177,11 @@ namespace TestService
         public void Concatenate_OneEmptyAndOneNonEmptyString_ReturnsNonEmptyString()
         {
             // Arrange
-            var str1 = "";
-            var str2 = "World!";
             var expected = "World!";
-            _mockServiceManager.Setup(s => s.TextService.Concatenate(str1, str2)).Returns(expected);
+            var controller = CreateController();
 
             // Act
-            var result = _controller.Concatenate(str1, str2) as OkObjectResult;
+            var result = controller.Concatenate(TestData.TextData.OneEmptyStringAndNonEmpty) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
