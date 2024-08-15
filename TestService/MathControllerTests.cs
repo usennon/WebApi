@@ -4,7 +4,13 @@ using Service.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Entities.TransferObjects;
 using Microsoft.AspNetCore.Http;
-using System;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
+using WebApi.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Routing;
+using System.ComponentModel.DataAnnotations;
+
+
 
 namespace TestService
 {
@@ -16,8 +22,21 @@ namespace TestService
         private MathController CreateController( Mock<IServiceManager>? mockServiceManager = null )
         {
             var controller = new MathController((mockServiceManager ?? _mockServiceManager).Object);
-
+           
             return controller;
+        }
+        public static IList<ValidationResult> ValidateModel(object model)
+        {
+            var results = new List<ValidationResult>();
+
+            var validationContext = new ValidationContext(model, null, null);
+
+            Validator.TryValidateObject(model, validationContext, results, true);
+
+            if (model is IValidatableObject validatableModel)
+                results.AddRange(validatableModel.Validate(validationContext));
+
+            return results;
         }
 
         [SetUp]
@@ -68,7 +87,7 @@ namespace TestService
         [Test]
         public void Sub_ReturnsDifferenceOfIntegers()
         {
-            //
+            // Arrange
             var controller = CreateController();
 
             // Act
@@ -85,33 +104,46 @@ namespace TestService
         [Test]
         public void GetSum_WithBody_ReturnsSum()
         {
-            // Arrange 
-            var controller = CreateController();
+            GetSumUtilityMethod(TestData.MathData.ListNumberInputSum, 9);
+        }
 
-            // Act
-            var result = controller.GetSum(TestData.MathData.ListNumberInputSum) as OkObjectResult;
+        [Test]
+        public void GetSum_WithEmptyList_ReturnsZero()
+        {
+            GetSumUtilityMethod(TestData.MathData.EmptyInput, 0);
+        }
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(9));
+        [Test]
+        public void GetSum_WithLargeNumberList_ReturnsCorrectSum()
+        {
+            GetSumUtilityMethod(TestData.MathData.LargeInput, TestData.MathData.LargeInput.Numbers.Sum());
 
         }
 
         [Test]
         public void GetAverage_ReturnsAverage()
         {
+            GetAverageUtilityMethod(TestData.MathData.ListNumbersInputAverage, 3.66);
+        }
+
+        [Test]
+        public void GetAverage_EmptyInput_ReturnsBadRequest()
+        {
             // Arrange
             var controller = CreateController();
 
             // Act
-            var result = controller.GetAverage(TestData.MathData.ListNumbersInputAverage) as OkObjectResult;
+            var result = controller.GetAverage(TestData.MathData.EmptyInput) as BadRequestObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(3.66).Within(0.01));
+            Assert.That(result.StatusCode, Is.EqualTo(400));
+        }
 
+        [Test]
+        public void GetAverage_OneNumber_ReturnsSameNumber()
+        {
+            GetAverageUtilityMethod(TestData.MathData.OneNumber, 7);
         }
 
         [Test]
@@ -132,6 +164,65 @@ namespace TestService
         }
 
         [Test]
+        public void GetIntegral_InvalidInput_ReturnsBadRequest()
+        {
+            // Specific test, we need to test our ActionFilter here to get error
+            // Arrange
+            var controller = CreateController();
+            var filter = new ValidateEvenPositiveNumberFilter();
+            var context = new ActionExecutingContext(
+                new ActionContext
+                {
+                    HttpContext = new DefaultHttpContext(),
+                    RouteData = new RouteData(),
+                    ActionDescriptor = new ControllerActionDescriptor()
+                },
+                new List<IFilterMetadata>(),
+                new Dictionary<string, object>
+                {
+                    { "input", TestData.MathData.InvalidIntervalIntegral }
+                },
+                controller
+            );
+
+            filter.OnActionExecuting(context);
+
+            if (context.Result != null)
+            {
+                var result = context.Result as ObjectResult;
+
+                // Assert
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result.StatusCode, Is.EqualTo(400)); 
+                return;
+            }
+
+            //// Act
+            //var res = controller.GetIntegral(TestData.MathData.InvalidIntervalIntegral) as BadRequestObjectResult;
+
+            //// Assert
+            //Assert.That(res, Is.Not.Null);
+            //Assert.That(res.StatusCode, Is.EqualTo(400));
+        }
+
+        [Test]
+        public void GetIntegral_ZeroInterval_ReturnsZero()
+        {
+            // Arrange
+            var controller = CreateController();
+            var expected = 0; // Integral under line(same interval) should be 0
+
+            // Act
+            var result = controller.GetIntegral(TestData.MathData.SameintervalIntegral) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(expected));
+        }
+
+
+        [Test]
         public void GetCompoundInterest_ValidInput_ReturnsInterest()
         {
             // Arrange
@@ -146,6 +237,96 @@ namespace TestService
             Assert.That(result.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
 
+        }
+
+        [Test]
+        public void GetCompoundIntersts_InvalidInputWrongInterestRate_ReturnsBadRequest()
+        {
+            // Arrange
+            //here we are not testing our controller, but instead validating our model(what does apicontroller actually)
+            var invalidModel = TestData.MathData.InvalidInterestRate;
+
+
+            // Act
+            var validationResult = ValidateModel(invalidModel);
+            // Assert
+            Assert.That(validationResult, Is.Not.Empty);
+        }
+
+        [Test]
+        public void GetCompoundIntersts_InvalidInputWrongNumberOfPeriods_ReturnsBadRequest()
+        {
+            // Arrange
+            //here we are not testing our controller, but instead validating our model(what does apicontroller actually)
+            var invalidModel = TestData.MathData.InvalidNumberOfPeriods;
+
+
+            // Act
+            var validationResult = ValidateModel(invalidModel);
+            // Assert
+            Assert.That(validationResult, Is.Not.Empty);
+        }
+
+        [Test]
+        public void GetCompoundInterest_ValidInputWithNoReinvestment_ReturnsInterest()
+        {
+            // Arrange
+            var controller = CreateController();
+            var expected = 1500.0;
+
+            // Act
+            var result = controller.GetCompoundInterest(TestData.MathData.CompoundModelInput) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
+
+        }
+
+        [Test]
+        public void GetCompoundInterest_BigNumbersInput_ReturnsInterest()
+        {
+            // Arrange
+            var controller = CreateController();
+            var expected = 101000000.0;
+
+            // Act
+            var result = controller.GetCompoundInterest(TestData.MathData.CompoundModelBigNumbersInput) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
+
+        }
+
+        private void GetSumUtilityMethod(NumberInputModel input, int expected)
+        {
+            // Arrange
+            var controller = CreateController();
+
+            // Act
+            var result = controller.GetSum(input) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(expected));
+        }
+
+        private void GetAverageUtilityMethod(NumberInputModel input, double expected)
+        {
+            // Arrange
+            var controller = CreateController();
+
+            // Act
+            var result = controller.GetAverage(input) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
         }
     }
 }

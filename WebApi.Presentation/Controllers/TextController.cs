@@ -14,13 +14,8 @@ namespace WebApi.Presentation.Controllers
         public TextController(IServiceManager service) => _service = service;
 
         [HttpGet("uppercase")]
-        public IActionResult GetUpperCase([FromQuery] string? input)
+        public IActionResult GetUpperCase([FromQuery] string input)
         {
-            if (string.IsNullOrEmpty(input))
-            {
-                return BadRequest("Input cannot be null or empty.");
-            }
-
             return Ok(_service.TextService.ToUpperCase(input));
         }
 

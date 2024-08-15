@@ -17,6 +17,16 @@ namespace TestService
             public static readonly NumberInputModel ListNumberInputSum
                 = new NumberInputModel { Numbers = new List<int> { 2, 3, 4 } };
 
+            public static readonly NumberInputModel ListNumberNegativeInput =
+                new NumberInputModel { Numbers = new List<int> { -1, -2, -3 } };
+
+            public static readonly NumberInputModel EmptyInput = new NumberInputModel { Numbers = new List<int>() };
+
+            public static readonly NumberInputModel OneNumber = new NumberInputModel { Numbers = new List<int>() { 7 } };
+
+            public static readonly NumberInputModel LargeInput =
+                new NumberInputModel { Numbers = Enumerable.Range(1, 1000).ToList() };
+
             public static readonly NumberInputModel ListNumbersInputAverage
                 = new NumberInputModel { Numbers = new List<int> { 2, 3, 6 } };
 
@@ -34,7 +44,57 @@ namespace TestService
                 NumberOfPeriods = 12,
                 ifReinvestment = true
             };
-        }
+
+            public static readonly CompoundInterstModel InvalidInterestRate = new CompoundInterstModel
+            {
+                StartSum = 1000,
+                YearInterestRate = 12,
+                YearsNumber = 10,
+                NumberOfPeriods = 12,
+                ifReinvestment = true
+            };
+
+            public static readonly CompoundInterstModel InvalidNumberOfPeriods = new CompoundInterstModel
+            {
+                StartSum = 1000,
+                YearInterestRate = 0.05,
+                YearsNumber = 10,
+                NumberOfPeriods = -5,
+                ifReinvestment = true
+            };
+
+            public static readonly CompoundInterstModel CompoundModelInput = new CompoundInterstModel
+            {
+                StartSum = 1000,
+                YearInterestRate = 0.05,
+                YearsNumber = 10,
+                NumberOfPeriods = 12,
+                ifReinvestment = false
+            };
+
+            public static readonly CompoundInterstModel CompoundModelBigNumbersInput = new CompoundInterstModel
+            {
+                StartSum = 1000000,
+                YearInterestRate = 1,
+                YearsNumber = 100,
+                NumberOfPeriods = 12,
+                ifReinvestment = false
+            };
+
+            public static readonly IntegralParametersModel InvalidIntervalIntegral = new IntegralParametersModel
+            {
+                StartInterval = 0,
+                EndInterval = 10,
+                IntervalsAmount = -5
+            };
+            public static readonly IntegralParametersModel SameintervalIntegral = new IntegralParametersModel
+            { 
+                StartInterval = 5, 
+                EndInterval = 5, 
+                IntervalsAmount = 10 
+            };
+
+        };
 
         internal static class TextData
         {

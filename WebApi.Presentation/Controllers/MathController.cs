@@ -35,6 +35,10 @@ namespace WebApi.Presentation.Controllers
         [HttpPost("average")]
         public IActionResult GetAverage([FromBody] NumberInputModel input)
         {
+            if (input.Numbers.Count == 0)
+            {
+                return BadRequest("Input cannot be null");
+            }
             var average = _service.MathService.GetAverage(input);
             return Ok(average);
         }

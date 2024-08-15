@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Controllers\1lapgwup.yxx~" />
+  </ItemGroup>
   
 <ItemGroup>
  <FrameworkReference Include="Microsoft.AspNetCore.App" />

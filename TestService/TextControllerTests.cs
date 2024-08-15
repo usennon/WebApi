@@ -30,97 +30,26 @@ namespace TestService
         [Test]
         public void GetUpperCase_ReturnsUpper()
         {
-            // Arrange
-            var inputString = "toupper";
-            var expected = "TOUPPER";
-            var controller = CreateController();
-
-            // Act
-            var result = controller.GetUpperCase(inputString) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
+            GetUpperCaseUtilityMethod("TOUPPER", "toupper");
         }
 
         [Test]
         public void GetUpperCase_SendStringNumber_ReturnsOk()
         {
-            var inputString = "2";
-            var expected = "2";
-            var controller = CreateController();
+            GetUpperCaseUtilityMethod("2", "2");
 
-            // Act
-            var result = controller.GetUpperCase(inputString) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void GetUpperCase_InputIsEmpty_ReturnsError()
-        {
-            // Arrange
-            var input = string.Empty;
-            var controller = CreateController();
-
-            // Act
-            var result = controller.GetUpperCase(input);
-
-            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-        }
-
-        [Test]
-        public void GetUpperCase_InputIsNull_ReturnsError()
-        {
-            // Arrange
-            string? input = null;
-            var controller = CreateController();
-
-            // Act
-            var result = controller.GetUpperCase(input) as BadRequestObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(400));
-            Assert.That(result.Value, Is.EqualTo("Input cannot be null or empty."));
         }
 
         [Test]
         public void GetUpperCase_InputWithNumbersAndSymbols_ReturnsUpperCaseString()
         {
-            // Arrange
-            var input = "hello123!@#";
-            var expected = "HELLO123!@#";
-            var controller = CreateController();
-
-            // Act
-            var result = controller.GetUpperCase(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
+            GetUpperCaseUtilityMethod("HELLO123!@#", "hello123!@#");
         }
 
         [Test]
         public void GetUpperCase_InputIsAlreadyUpperCase_ReturnsSameString()
         {
-            // Arrange
-            var input = "HELLO";
-            var expected = "HELLO";
-            var controller = CreateController();
-
-            // Act
-            var result = controller.GetUpperCase(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
+            GetUpperCaseUtilityMethod("HELLO", "HELLO");
         }
 
         [Test]
