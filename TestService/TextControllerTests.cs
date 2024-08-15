@@ -126,62 +126,64 @@ namespace TestService
         [Test]
         public void GetUpperCase_InputWithSpaces_ReturnsUpperCaseString()
         {
-            // Arrange
-            var input = "hello world";
-            var expected = "HELLO WORLD";
-            var controller = CreateController();
-
-            // Act
-            var result = controller.GetUpperCase(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
+            GetUpperCaseUtilityMethod("HELLO WORLD", "hello world");
         }
 
         [Test]
         public void GetUpperCase_InputWithMixedCase_ReturnsUpperCaseString()
         {
-            // Arrange
-            var input = "HeLLo WoRLd";
-            var expected = "HELLO WORLD";
-            var controller = CreateController();
-
-            // Act
-            var result = controller.GetUpperCase(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
+            GetUpperCaseUtilityMethod("HELLO WORLD", "HeLLo WoRLd");
         }
 
         [Test]
         public void Concatenate_TwoNonEmptyStrings_ReturnsConcatenatedString()
         {
+            ConcatenateUtilityMethod("Hello, World!", TestData.TextData.TwoNonEmptyStrings);
+        }
+
+        [Test]
+        public void Concatenate_OneEmptyAndOneNonEmptyString_ReturnsNonEmptyString()
+        {
+            ConcatenateUtilityMethod("World!", TestData.TextData.OneEmptyStringAndNonEmpty);
+        }
+
+        [Test]
+        public void Concatenate_BothEmptyStrings_ReturnsEmptyString()
+        {
+            ConcatenateUtilityMethod("", TestData.TextData.Empty);
+        }
+
+        [Test]
+        public void Concatenate_FirstStringIsNull_ReturnsSecondString()
+        {
+            ConcatenateUtilityMethod("World", TestData.TextData.StringAndNull);
+        }
+        [Test]
+        public void Concatenate_BothStringNulls_ReturnsSecondString()
+        {
+            ConcatenateUtilityMethod("", TestData.TextData.Nulls);
+        }
+
+        private void ConcatenateUtilityMethod(string expected, StringContainerModel input)
+        {
             // Arrange
-            var expected = "Hello, World!";
             var controller = CreateController();
 
             // Act
-            var result = controller.Concatenate(TestData.TextData.TwoNonEmptyStrings) as OkObjectResult;
+            var result = controller.Concatenate(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.EqualTo(expected));
         }
-
-        [Test]
-        public void Concatenate_OneEmptyAndOneNonEmptyString_ReturnsNonEmptyString()
+        private void GetUpperCaseUtilityMethod(string expected, string input)
         {
             // Arrange
-            var expected = "World!";
             var controller = CreateController();
 
             // Act
-            var result = controller.Concatenate(TestData.TextData.OneEmptyStringAndNonEmpty) as OkObjectResult;
+            var result = controller.GetUpperCase(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);

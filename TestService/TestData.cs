@@ -49,6 +49,14 @@ namespace TestService
                 SecondString = "World!"
             };
 
+            public static readonly StringContainerModel Empty  = new StringContainerModel { FirstString = "", SecondString = "" };
+
+            public static readonly StringContainerModel StringAndNull = new StringContainerModel 
+            { FirstString = null, SecondString = "World" };
+
+            public static readonly StringContainerModel Nulls = new StringContainerModel 
+            { FirstString = null, SecondString = null };
+
         }
     }
 }
