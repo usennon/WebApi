@@ -10,13 +10,6 @@ namespace TestService
     {
         private Mock<IServiceManager> _mockServiceManager;
 
-        private TextController CreateController(Mock<IServiceManager>? mockServiceManager = null)
-        {
-            var controller = new TextController((mockServiceManager ?? _mockServiceManager).Object);
-
-            return controller;
-        }
-
         [SetUp]
         public void Setup()
         {
@@ -96,7 +89,7 @@ namespace TestService
         private void ConcatenateUtilityMethod(string expected, StringContainerModel input)
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<TextController>(_mockServiceManager);
 
             // Act
             var result = controller.Concatenate(input) as OkObjectResult;
@@ -109,7 +102,7 @@ namespace TestService
         private void GetUpperCaseUtilityMethod(string expected, string input)
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<TextController>(_mockServiceManager);
 
             // Act
             var result = controller.GetUpperCase(input) as OkObjectResult;

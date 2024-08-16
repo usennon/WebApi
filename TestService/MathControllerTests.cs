@@ -19,12 +19,6 @@ namespace TestService
     {
         private Mock<IServiceManager> _mockServiceManager;
 
-        private MathController CreateController( Mock<IServiceManager>? mockServiceManager = null )
-        {
-            var controller = new MathController((mockServiceManager ?? _mockServiceManager).Object);
-           
-            return controller;
-        }
         public static IList<ValidationResult> ValidateModel(object model)
         {
             var results = new List<ValidationResult>();
@@ -71,7 +65,7 @@ namespace TestService
         public void Sum_ReturnsSumOfIntegers()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
             // Act
             var result = controller.Sum(TestData.MathData.NumbersToSum.FirstNumber, 
@@ -88,7 +82,7 @@ namespace TestService
         public void Sub_ReturnsDifferenceOfIntegers()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
             // Act
             var result = controller.Sub(TestData.MathData.NumbersToSub.FirstNumber,
@@ -130,7 +124,7 @@ namespace TestService
         public void GetAverage_EmptyInput_ReturnsBadRequest()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
             // Act
             var result = controller.GetAverage(TestData.MathData.EmptyInput) as BadRequestObjectResult;
@@ -150,7 +144,7 @@ namespace TestService
         public void GetIntegral_ValidInput_ReturnsIntegral()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
             var expected = 0.33;
 
             // Act
@@ -168,7 +162,7 @@ namespace TestService
         {
             // Specific test, we need to test our ActionFilter here to get error
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
             var filter = new ValidateEvenPositiveNumberFilter();
             var context = new ActionExecutingContext(
                 new ActionContext
@@ -209,7 +203,7 @@ namespace TestService
         public void GetIntegral_ZeroInterval_ReturnsZero()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
             var expected = 0; // Integral under line(same interval) should be 0
 
             // Act
@@ -226,7 +220,7 @@ namespace TestService
         public void GetCompoundInterest_ValidInput_ReturnsInterest()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
             var expected = 1647.01;
 
             // Act
@@ -271,7 +265,7 @@ namespace TestService
         public void GetCompoundInterest_ValidInputWithNoReinvestment_ReturnsInterest()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
             var expected = 1500.0;
 
             // Act
@@ -288,7 +282,7 @@ namespace TestService
         public void GetCompoundInterest_BigNumbersInput_ReturnsInterest()
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
             var expected = 101000000.0;
 
             // Act
@@ -304,7 +298,7 @@ namespace TestService
         private void GetSumUtilityMethod(NumberInputModel input, int expected)
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
             // Act
             var result = controller.GetSum(input) as OkObjectResult;
@@ -318,7 +312,7 @@ namespace TestService
         private void GetAverageUtilityMethod(NumberInputModel input, double expected)
         {
             // Arrange
-            var controller = CreateController();
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
             // Act
             var result = controller.GetAverage(input) as OkObjectResult;
