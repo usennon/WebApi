@@ -1,5 +1,5 @@
 ﻿using Service.Contracts;
-using System.Security.Cryptography.X509Certificates;
+using MemoryStorage.Interfaces;
 using System.Text;
 
 namespace Service
@@ -8,19 +8,18 @@ namespace Service
     {
         private readonly ILoggerManager _logger;
 
-        public TextService(ILoggerManager logger) 
+        private readonly IMemoryStorage _storage;
+
+        public TextService(ILoggerManager logger, IMemoryStorage storage) 
         {
             _logger = logger;
+            _storage = storage;
         }
         public string ToUpperCase(string str) => str.ToUpper();
 
         public string Concatenate(string str1, string str2)
         {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(str1);
-            sb.Append(str2);
-            return sb.ToString();
+            return _storage.Concatenate(str1, str2);
         }
     }
 }

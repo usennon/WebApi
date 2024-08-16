@@ -1,6 +1,8 @@
 ﻿using LoggerService;
 using Service.Contracts;
 using Service;
+using MemoryStorage.Interfaces;
+using MemoryStorage;
 
 namespace WebApi.Extensions
 {
@@ -20,7 +22,9 @@ namespace WebApi.Extensions
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
 
-
+        public static void ConfigureServiceMemoryStorage(this IServiceCollection services) =>
+           services.AddSingleton<IMemoryStorage, CalculationMemoryStorage>();
+        
 
     }
 }

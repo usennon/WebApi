@@ -18,6 +18,8 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddScoped<ValidateEvenPositiveNumberFilter>();
 
+builder.Services.ConfigureServiceMemoryStorage();
+
 builder.Services.AddControllers().AddApplicationPart(typeof(WebApi.Presentation.AssemblyReference).Assembly);
 
 var app = builder.Build();

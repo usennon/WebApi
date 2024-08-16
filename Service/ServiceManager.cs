@@ -1,9 +1,5 @@
 ﻿using Service.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MemoryStorage.Interfaces;
 
 namespace Service
 {
@@ -12,10 +8,10 @@ namespace Service
         private readonly Lazy<ITextService> _textService;
         private readonly Lazy<IMathService> _mathService;
 
-        public ServiceManager(ILoggerManager logger)
+        public ServiceManager(ILoggerManager logger, IMemoryStorage storage)
         {
-            _mathService = new Lazy<IMathService>(() => new MathService(logger));
-            _textService = new Lazy<ITextService>(() => new TextService(logger));
+            _mathService = new Lazy<IMathService>(() => new MathService(logger, storage));
+            _textService = new Lazy<ITextService>(() => new TextService(logger, storage));
            
         }
 

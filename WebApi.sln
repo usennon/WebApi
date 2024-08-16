@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "LoggerServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{4BF96F7C-98F8-4D35-8C6E-D2F00CDED570}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestService", "TestService\TestService.csproj", "{30739270-CD89-4517-BE31-8FCF0F83F3B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestService", "TestService\TestService.csproj", "{30739270-CD89-4517-BE31-8FCF0F83F3B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryStorage", "MemoryStorage\MemoryStorage.csproj", "{1AD97C7A-E091-4506-9709-F528B5DFA6FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{30739270-CD89-4517-BE31-8FCF0F83F3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30739270-CD89-4517-BE31-8FCF0F83F3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30739270-CD89-4517-BE31-8FCF0F83F3B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD97C7A-E091-4506-9709-F528B5DFA6FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD97C7A-E091-4506-9709-F528B5DFA6FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD97C7A-E091-4506-9709-F528B5DFA6FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD97C7A-E091-4506-9709-F528B5DFA6FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
