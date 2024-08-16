@@ -21,5 +21,7 @@ namespace Service
         {
             return _storage.Concatenate(str1, str2);
         }
+
+        public void Clear() => _storage.Clear(); 
     }
 }

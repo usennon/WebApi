@@ -15,5 +15,7 @@ namespace Service.Contracts
         public double GetIntegral(IntegralParametersModel parameters);
 
         public double GetCompoundInterest(CompoundInterstModel model);
+
+        void Clear();
     }
 }

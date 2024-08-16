@@ -55,7 +55,7 @@ namespace Service
             }
         }
 
-
+        public void Clear() => _storage.Clear();
 
     }
 }

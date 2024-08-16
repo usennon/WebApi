@@ -11,5 +11,7 @@ namespace Service.Contracts
         string ToUpperCase(string str);
 
         string Concatenate(string str0, string str1);
+
+        void Clear();
     }
 }

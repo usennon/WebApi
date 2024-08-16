@@ -58,6 +58,13 @@ namespace WebApi.Presentation.Controllers
             return Ok(result);
         }
 
+        [HttpGet("clear")]
+        public IActionResult Clear()
+        {
+            _service.MathService.Clear();
+            return Ok();
+        }
+
 
 
     }

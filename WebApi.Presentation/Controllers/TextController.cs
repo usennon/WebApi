@@ -25,6 +25,13 @@ namespace WebApi.Presentation.Controllers
             return Ok(_service.TextService.Concatenate(strings.FirstString, strings.SecondString));
         }
 
+        [HttpGet("clear")]
+        public IActionResult Clear()
+        {
+            _service.TextService.Clear();
+            return Ok();
+        }
+
     }
 
 }
