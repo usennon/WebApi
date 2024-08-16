@@ -19,6 +19,11 @@ namespace MemoryStorage
             return _currentTotal;
         }
 
+        public string GetCurrentString()
+        {
+            return _concatenated;
+        }
+
         public void Clear()
         {
             _currentTotal = 0;

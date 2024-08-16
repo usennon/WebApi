@@ -22,6 +22,10 @@ namespace WebApi.Presentation.Controllers
         [HttpPost("concat")]
         public IActionResult Concatenate([FromBody] StringContainerModel strings)
         {
+            if (strings.FirstString == null || strings.SecondString == null)
+            {
+                return BadRequest("Input can't be null");
+            }
             return Ok(_service.TextService.Concatenate(strings.FirstString, strings.SecondString));
         }
 

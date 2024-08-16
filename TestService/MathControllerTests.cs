@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using WebApi.Presentation.ActionFilters;
 using Microsoft.AspNetCore.Routing;
 using System.ComponentModel.DataAnnotations;
+using MemoryStorage.Interfaces;
+using System;
 
 
 
@@ -18,6 +20,10 @@ namespace TestService
     public class MathControllerTests
     {
         private Mock<IServiceManager> _mockServiceManager;
+
+        private Mock<IMemoryStorage> _mockStorage;
+
+        private int _currentTotal = 0;
 
         public static IList<ValidationResult> ValidateModel(object model)
         {
@@ -36,16 +42,40 @@ namespace TestService
         [SetUp]
         public void Setup()
         {
-            
+            _currentTotal = 0;
+
             _mockServiceManager = new Mock<IServiceManager>();
+
+            _mockStorage = new Mock<IMemoryStorage>();
+
+            _mockStorage.Setup(s => s.GetCurrentTotal()).Returns(() => _currentTotal);
+
+            _mockStorage.Setup(s => s.AddResult(It.IsAny<int>())).Callback<int>(result =>
+            {
+                _currentTotal = result;
+            });
+
             _mockServiceManager.Setup(s => s.MathService.GetSum(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns((int a, int b) => a + b);
+                .Returns((int a, int b) =>
+                {
+                    var sum = _mockStorage.Object.GetCurrentTotal() + a + b;
+                    _mockStorage.Object.AddResult(sum);
+                    return sum;
+                });
 
             _mockServiceManager.Setup(s => s.MathService.GetSub(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns((int a, int b) => a - b);
+                .Returns((int a, int b) => {
+                    var sub = _mockStorage.Object.GetCurrentTotal() - a - b;
+                    _mockStorage.Object.AddResult(sub);
+                    return sub;
+                });
 
             _mockServiceManager.Setup(s => s.MathService.GetSum(It.IsAny<NumberInputModel>()))
-                .Returns((NumberInputModel input ) => input.Numbers.Sum());
+                .Returns((NumberInputModel input ) => {
+                    var sum = input.Numbers.Sum() + _mockStorage.Object.GetCurrentTotal();
+                    _mockStorage.Object.AddResult(sum);
+                    return sum;
+                });
 
             _mockServiceManager.Setup(s => s.MathService.GetAverage(It.IsAny<NumberInputModel>()))
                 .Returns((NumberInputModel input) => input.Numbers.Average());
@@ -59,6 +89,8 @@ namespace TestService
             => values.ifReinvestment ? (values.StartSum * Math.Pow((1 + values.YearInterestRate / values.NumberOfPeriods),
                 values.NumberOfPeriods * values.YearsNumber))
                 : (values.StartSum * (1 + values.YearInterestRate * values.YearsNumber)));
+
+            _mockServiceManager.Setup(s => s.MathService.Clear()).Callback(() => _currentTotal = 0);
         }
 
         [Test]
@@ -66,6 +98,7 @@ namespace TestService
         {
             // Arrange
             var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
+
 
             // Act
             var result = controller.Sum(TestData.MathData.NumbersToSum.FirstNumber, 
@@ -91,7 +124,7 @@ namespace TestService
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(7));
+            Assert.That(result.Value, Is.EqualTo(-13));
 
         }
 
@@ -112,6 +145,61 @@ namespace TestService
         {
             GetSumUtilityMethod(TestData.MathData.LargeInput, TestData.MathData.LargeInput.Numbers.Sum());
 
+        }
+
+        [Test]
+        public void Sum_AccumulatesCorrectly()
+        {
+            // Arrange
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
+
+            // Act
+            controller.Sum(3, 5);
+            var result = controller.Sum(3, 5) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(16));
+
+            _mockStorage.Verify(s => s.AddResult(8), Times.Once);
+            _mockStorage.Verify(s => s.AddResult(16), Times.Once);
+        }
+
+        [Test]
+        public void Sub_AccumulatesCorrectly()
+        {
+            // Arrange
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
+
+            // Act
+            controller.Sub(3, 4);
+            var result = controller.Sub(3, 4) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(-14));
+
+            _mockStorage.Verify(s => s.AddResult(-7), Times.Once);
+            _mockStorage.Verify(s => s.AddResult(-14), Times.Once);
+        }
+
+        [Test]
+        public void Clear_ResetsStorage()
+        {
+            // Arrange
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
+
+            // Act
+            controller.Sum(3, 5);
+            controller.Clear();
+            var result = controller.GetSum(TestData.MathData.ListNumberInputSum) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(9));
         }
 
         [Test]

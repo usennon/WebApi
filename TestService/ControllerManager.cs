@@ -10,9 +10,9 @@ namespace TestService
 {
     public static class ControllerManager
     {
-        public static T CreateController<T>(Mock<IServiceManager>? mockServiceManager = null) where T : ControllerBase
+        public static T CreateController<T>(Mock<IServiceManager> mockServiceManager) where T : ControllerBase
         {
-            var serviceManager = mockServiceManager ?? new Mock<IServiceManager>();
+            var serviceManager = mockServiceManager;
 
             var controller = Activator.CreateInstance(typeof(T), serviceManager.Object) as T;
 
