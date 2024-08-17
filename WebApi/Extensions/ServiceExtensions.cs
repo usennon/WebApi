@@ -3,6 +3,7 @@ using Service.Contracts;
 using Service;
 using MemoryStorage.Interfaces;
 using MemoryStorage;
+using Microsoft.OpenApi.Models;
 
 namespace WebApi.Extensions
 {
@@ -24,7 +25,18 @@ namespace WebApi.Extensions
 
         public static void ConfigureServiceMemoryStorage(this IServiceCollection services) =>
            services.AddSingleton<IMemoryStorage, CalculationMemoryStorage>();
-        
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "WebAPI",
+                    Version = "v1"
+                });
+            });
+        }
 
     }
 }

@@ -20,6 +20,9 @@ builder.Services.AddScoped<ValidateEvenPositiveNumberFilter>();
 
 builder.Services.ConfigureServiceMemoryStorage();
 
+builder.Services.ConfigureSwagger();
+
+
 builder.Services.AddControllers().AddApplicationPart(typeof(WebApi.Presentation.AssemblyReference).Assembly);
 
 var app = builder.Build();
@@ -31,5 +34,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseSwagger();
+app.UseSwaggerUI(s =>
+{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1");
+});
 
 app.Run();
