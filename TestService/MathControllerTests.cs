@@ -93,58 +93,53 @@ namespace TestService
             _mockServiceManager.Setup(s => s.MathService.Clear()).Callback(() => _currentTotal = 0);
         }
 
-        [Test]
-        public void Sum_ReturnsSumOfIntegers()
+        [TestCase(5, 3, 8, TestName = "Adding 5 and 3 should return 8")]
+        [TestCase(5, -3, 2, TestName = "Adding 5 and -3 should return 2")]
+        [TestCase(-5, -3, -8, TestName = "Adding -5 and -3 should return -8")]
+        public void Sum_ReturnsSumOfIntegers(int a, int b, int expected)
         {
             // Arrange
             var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
 
             // Act
-            var result = controller.Sum(TestData.MathData.NumbersToSum.FirstNumber, 
-                TestData.MathData.NumbersToSum.SecondNumber) as OkObjectResult;
+            var result = controller.Sum(a, b) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(8));
+            Assert.That(result.Value, Is.EqualTo(expected));
 
         }
 
-        [Test]
-        public void Sub_ReturnsDifferenceOfIntegers()
+        [TestCase(10, 3, -13, TestName = "Substracting 10 and 3 should return -13")]
+        [TestCase(-10, -3, 13, TestName = "Substracting -10 and -33 should return 13")]
+        public void Sub_ReturnsDifferenceOfIntegers(int a, int b, int expected)
         {
             // Arrange
             var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
             // Act
-            var result = controller.Sub(TestData.MathData.NumbersToSub.FirstNumber,
-                TestData.MathData.NumbersToSub.SecondNumber) as OkObjectResult;
+            var result = controller.Sub(a, b) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(-13));
+            Assert.That(result.Value, Is.EqualTo(expected));
 
         }
 
-        [Test]
-        public void GetSum_WithBody_ReturnsSum()
+        [TestCaseSource(typeof(TestData.MathData), nameof(TestData.MathData.SumListInputCases))]
+        public int GetSum_ReturnsSum(NumberInputModel input)
         {
-            GetSumUtilityMethod(TestData.MathData.ListNumberInputSum, 9);
-        }
+            // Arrange
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
 
-        [Test]
-        public void GetSum_WithEmptyList_ReturnsZero()
-        {
-            GetSumUtilityMethod(TestData.MathData.EmptyInput, 0);
-        }
+            // Act
+            var result = controller.GetSum(input) as OkObjectResult;
 
-        [Test]
-        public void GetSum_WithLargeNumberList_ReturnsCorrectSum()
-        {
-            GetSumUtilityMethod(TestData.MathData.LargeInput, TestData.MathData.LargeInput.Numbers.Sum());
-
+            // Assert
+            return Int32.Parse(result.Value.ToString());
         }
 
         [Test]
@@ -202,10 +197,19 @@ namespace TestService
             Assert.That(result.Value, Is.EqualTo(9));
         }
 
-        [Test]
-        public void GetAverage_ReturnsAverage()
+        [TestCaseSource(typeof(TestData.MathData), nameof(TestData.MathData.AverageListInputCases))]
+        public double GetAverage_ReturnsAverage(NumberInputModel input)
         {
-            GetAverageUtilityMethod(TestData.MathData.ListNumbersInputAverage, 3.66);
+            // Arrange
+            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
+
+            // Act
+            var result = controller.GetAverage(input) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            return Double.Parse(result.Value.ToString());
         }
 
         [Test]
@@ -222,26 +226,19 @@ namespace TestService
             Assert.That(result.StatusCode, Is.EqualTo(400));
         }
 
-        [Test]
-        public void GetAverage_OneNumber_ReturnsSameNumber()
-        {
-            GetAverageUtilityMethod(TestData.MathData.OneNumber, 7);
-        }
-
-        [Test]
-        public void GetIntegral_ValidInput_ReturnsIntegral()
+        [TestCaseSource(typeof(TestData.MathData), nameof(TestData.MathData.IntegralInputCases))]
+        public double GetIntegral_ValidInput_ReturnsIntegral(IntegralParametersModel input)
         {
             // Arrange
             var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
-            var expected = 0.33;
 
             // Act
-            var result = controller.GetIntegral(TestData.MathData.DefaultIntegralParameters) as OkObjectResult;
+            var result = controller.GetIntegral(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
+            return Math.Round(Double.Parse(result.Value.ToString()), 2);
 
         }
 
@@ -287,128 +284,36 @@ namespace TestService
             //Assert.That(res.StatusCode, Is.EqualTo(400));
         }
 
-        [Test]
-        public void GetIntegral_ZeroInterval_ReturnsZero()
+
+        [TestCaseSource(typeof(TestData.MathData), nameof(TestData.MathData.InterestInputCases))]
+        public double GetCompoundInterest_ValidInput_ReturnsInterest(CompoundInterstModel input)
         {
             // Arrange
             var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
-            var expected = 0; // Integral under line(same interval) should be 0
 
             // Act
-            var result = controller.GetIntegral(TestData.MathData.SameintervalIntegral) as OkObjectResult;
+            var result = controller.GetCompoundInterest(input) as OkObjectResult;
 
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
-        }
-
-
-        [Test]
-        public void GetCompoundInterest_ValidInput_ReturnsInterest()
-        {
-            // Arrange
-            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
-            var expected = 1647.01;
-
-            // Act
-            var result = controller.GetCompoundInterest(TestData.MathData.DefaultCompoundInterest) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
+            return Math.Round(Double.Parse(result.Value.ToString()), 2);
 
         }
 
-        [Test]
-        public void GetCompoundIntersts_InvalidInputWrongInterestRate_ReturnsBadRequest()
+        [TestCaseSource(typeof(TestData.MathData), nameof(TestData.MathData.InvalidInterestInputCases))]
+        public void GetCompoundIntersts_InvalidInputWrongInterestRate_ReturnsBadRequest(CompoundInterstModel input)
         {
             // Arrange
             //here we are not testing our controller, but instead validating our model(what does apicontroller actually)
-            var invalidModel = TestData.MathData.InvalidInterestRate;
 
 
             // Act
-            var validationResult = ValidateModel(invalidModel);
+            var validationResult = ValidateModel(input);
             // Assert
             Assert.That(validationResult, Is.Not.Empty);
+            Assert.That(validationResult.First().ErrorMessage, Is.Not.Null.Or.Empty);
         }
-
-        [Test]
-        public void GetCompoundIntersts_InvalidInputWrongNumberOfPeriods_ReturnsBadRequest()
-        {
-            // Arrange
-            //here we are not testing our controller, but instead validating our model(what does apicontroller actually)
-            var invalidModel = TestData.MathData.InvalidNumberOfPeriods;
-
-
-            // Act
-            var validationResult = ValidateModel(invalidModel);
-            // Assert
-            Assert.That(validationResult, Is.Not.Empty);
-        }
-
-        [Test]
-        public void GetCompoundInterest_ValidInputWithNoReinvestment_ReturnsInterest()
-        {
-            // Arrange
-            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
-            var expected = 1500.0;
-
-            // Act
-            var result = controller.GetCompoundInterest(TestData.MathData.CompoundModelInput) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
-
-        }
-
-        [Test]
-        public void GetCompoundInterest_BigNumbersInput_ReturnsInterest()
-        {
-            // Arrange
-            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
-            var expected = 101000000.0;
-
-            // Act
-            var result = controller.GetCompoundInterest(TestData.MathData.CompoundModelBigNumbersInput) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
-
-        }
-
-        private void GetSumUtilityMethod(NumberInputModel input, int expected)
-        {
-            // Arrange
-            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
-
-            // Act
-            var result = controller.GetSum(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
-        }
-
-        private void GetAverageUtilityMethod(NumberInputModel input, double expected)
-        {
-            // Arrange
-            var controller = ControllerManager.CreateController<MathController>(_mockServiceManager);
-
-            // Act
-            var result = controller.GetAverage(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected).Within(0.01));
-        }
+       
     }
 }

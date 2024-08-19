@@ -41,63 +41,41 @@ namespace TestService
             _mockServiceManager.Setup(s => s.TextService.Clear()).Callback(() => _text = string.Empty);
         }
 
-        [Test]
-        public void GetUpperCase_ReturnsUpper()
+        [TestCase("toupper", "TOUPPER")]
+        [TestCase("2", "2")]
+        [TestCase("hello123!@#", "HELLO123!@#")]
+        [TestCase("HELLO", "HELLO")]
+        [TestCase("HeLLo WoRLd", "HELLO WORLD")]
+        public void GetUpperCase_ReturnsUpper(string input, string expected)
         {
-            GetUpperCaseUtilityMethod("TOUPPER", "toupper");
+            // Arrange
+            var controller = ControllerManager.CreateController<TextController>(_mockServiceManager);
+
+            // Act
+            var result = controller.GetUpperCase(input) as OkObjectResult;
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.That(result.Value, Is.EqualTo(expected));
+        }
+
+        [TestCaseSource(typeof(TestData.TextData), nameof(TestData.TextData.StringTestData))]
+        public string Concatenate_ReturnsConcatenatedString(StringContainerModel input)
+        {
+            // Arrange
+            var controller = ControllerManager.CreateController<TextController>(_mockServiceManager);
+
+            // Act
+            var result = controller.Concatenate(input) as OkObjectResult;
+
+            // Assert
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            return result.Value.ToString();
         }
 
         [Test]
-        public void GetUpperCase_SendStringNumber_ReturnsOk()
-        {
-            GetUpperCaseUtilityMethod("2", "2");
-
-        }
-
-        [Test]
-        public void GetUpperCase_InputWithNumbersAndSymbols_ReturnsUpperCaseString()
-        {
-            GetUpperCaseUtilityMethod("HELLO123!@#", "hello123!@#");
-        }
-
-        [Test]
-        public void GetUpperCase_InputIsAlreadyUpperCase_ReturnsSameString()
-        {
-            GetUpperCaseUtilityMethod("HELLO", "HELLO");
-        }
-
-        [Test]
-        public void GetUpperCase_InputWithSpaces_ReturnsUpperCaseString()
-        {
-            GetUpperCaseUtilityMethod("HELLO WORLD", "hello world");
-        }
-
-        [Test]
-        public void GetUpperCase_InputWithMixedCase_ReturnsUpperCaseString()
-        {
-            GetUpperCaseUtilityMethod("HELLO WORLD", "HeLLo WoRLd");
-        }
-
-        [Test]
-        public void Concatenate_TwoNonEmptyStrings_ReturnsConcatenatedString()
-        {
-            ConcatenateUtilityMethod("Hello, World!", TestData.TextData.TwoNonEmptyStrings);
-        }
-
-        [Test]
-        public void Concatenate_OneEmptyAndOneNonEmptyString_ReturnsNonEmptyString()
-        {
-            ConcatenateUtilityMethod("World!", TestData.TextData.OneEmptyStringAndNonEmpty);
-        }
-
-        [Test]
-        public void Concatenate_BothEmptyStrings_ReturnsEmptyString()
-        {
-            ConcatenateUtilityMethod("", TestData.TextData.Empty);
-        }
-
-        [Test]
-        public void Concatenate_StringIsNull_ReturnsSecondString()
+        public void Concatenate_StringIsNull_ReturnsError()
         {
             // Arrange
             var controller = ControllerManager.CreateController<TextController>(_mockServiceManager);
@@ -141,33 +119,6 @@ namespace TestService
             Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.EqualTo("World!"));
-        }
-
-        private void ConcatenateUtilityMethod(string expected, StringContainerModel input)
-        {
-            // Arrange
-            var controller = ControllerManager.CreateController<TextController>(_mockServiceManager);
-
-            // Act
-            var result = controller.Concatenate(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
-        }
-        private void GetUpperCaseUtilityMethod(string expected, string input)
-        {
-            // Arrange
-            var controller = ControllerManager.CreateController<TextController>(_mockServiceManager);
-
-            // Act
-            var result = controller.GetUpperCase(input) as OkObjectResult;
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo(200));
-            Assert.That(result.Value, Is.EqualTo(expected));
         }
 
     }
